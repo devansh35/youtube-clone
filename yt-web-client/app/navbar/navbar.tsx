@@ -1,3 +1,5 @@
+'use client';
+
 import Image from "next/image";
 import Link from "next/link";
 
@@ -13,9 +15,12 @@ export default function Navbar() {
     const [user, setUser] = useState<User | null>(null);
     
     useEffect(() => {
-        onAuthStateChangedHelper((user) => {
+        const unsubscribe = onAuthStateChangedHelper((user) => {
             setUser(user);
         });
+
+        // cleanup subscription on unmount
+        return () => unsubscribe();
     });
 
     return (
@@ -27,7 +32,7 @@ export default function Navbar() {
             {
                 // TODO: Add a upload button
             }
-            <SignIn />
+            <SignIn user={user}/>
         </nav>
     );
 }
